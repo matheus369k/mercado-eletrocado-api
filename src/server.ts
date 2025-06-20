@@ -1,13 +1,12 @@
-import fastify from 'fastify';
+import Fastify from 'fastify';
 import { env } from './env';
+import { mongoConnectionDatabase } from './mongo/connection';
 
-const server = fastify();
-
-server.get('/', async (request, reply) => {
-	reply.send('hello');
+const fastify = Fastify({
+	logger: true,
 });
 
-server.listen(
+fastify.listen(
 	{
 		port: env.PORT,
 	},
@@ -16,6 +15,8 @@ server.listen(
 			console.error(err);
 			process.exit(1);
 		}
-		console.log(`Server listening at ${address}`);
+		mongoConnectionDatabase().finally(() => {
+			console.log(`Server listening at ${address}`);
+		});
 	},
 );
