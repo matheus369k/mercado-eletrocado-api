@@ -9,16 +9,22 @@
       "ESNext.Iterator"
     ],
     "module": "nodenext",
-    "target": "es2017",
+    "target": "es2022",
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "baseUrl": ".",
-    "paths": {
-      "@/": [
-        "./src"
-      ]
-    }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ],
+  "include": [
+    "src",
+    "docker"
+  ]
 }
