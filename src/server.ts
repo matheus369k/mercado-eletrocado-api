@@ -19,6 +19,9 @@ app.register(cors, {
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+app.get('/hearth', (_,res)=>{
+	res.send('ok')
+})
 app.register(productsRoutes.routeAddProduct);
 app.register(productsRoutes.routeGetProducts);
 app.register(productsRoutes.routeDeleteProduct);

@@ -1,0 +1,40 @@
+# Variables
+@base = http://localhost:3000
+@productId = {{CreateProduct.response.body.productId}}
+
+### HearthChecked
+# @name HearthChecked
+GET {{base}}/hearth
+
+### CreateProduct
+# @name CreateProduct
+POST {{base}}/api/products
+Content-Type: application/json
+
+{
+  "model": "iPhone 15 | Decima geração",
+  "img": "http://e-commerce.com/image/exemple-1.png",
+  "slide": {
+    "slide1": "http://e-commerce.com/image/exemple-1.png",
+    "slide2": "http://e-commerce.com/image/exemple-2.png",
+    "slide3": "http://e-commerce.com/image/exemple-3.png"
+  },
+  "screen": "Tela 7.6 polegada",
+  "processor": "Processador 5 geração",
+  "memory": "8GB de memoria",
+  "placeVideo": "Rayzon 4 geração",
+  "price": 3786,
+  "category": "phone"
+}
+
+### GetProducts
+# @name GetProducts
+GET {{base}}/api/products
+
+### GetProductWithCategory
+# @name GetProductsWithCategory
+GET {{base}}/api/products/phone
+
+### DeleteProduct
+# @name GetProduct
+DELETE {{base}}/api/products/{{productId}}
