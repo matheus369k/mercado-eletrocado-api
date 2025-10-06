@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import { mongoConnectionDatabase } from 'src/config/database';
-import { MongoDatabase } from 'src/model/product';
+import { MongoConnection } from '@/db/mongo/mongo';
+import { MongoDatabase } from '@/db/mongo/schema/product';
 
 const seed = async () => {
 	try {
-		await mongoConnectionDatabase();
+		await MongoConnection();
 		await MongoDatabase.Products.deleteMany();
 		await MongoDatabase.Products.insertMany([
 			{

@@ -58,6 +58,4 @@ const Product = new mongoose.Schema(
 	},
 );
 
-export const MongoDatabase = {
-	Products: mongoose.model('product', Product),
-};
+export { Product };
