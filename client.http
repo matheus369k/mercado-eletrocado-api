@@ -36,5 +36,5 @@ GET {{base}}/api/products
 GET {{base}}/api/products/phone
 
 ### DeleteProduct
-# @name GetProduct
+# @name DeleteProduct
 DELETE {{base}}/api/products/{{productId}}

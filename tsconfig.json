@@ -17,6 +17,11 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "exclude": [
     "node_modules",

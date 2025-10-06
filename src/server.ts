@@ -1,16 +1,13 @@
-import { fastify } from 'fastify';
 import cors from '@fastify/cors';
-import { env } from './env';
-import { mongoConnectionDatabase } from './config/database';
+import { fastify } from 'fastify';
 import {
 	serializerCompiler,
 	validatorCompiler,
 } from 'fastify-type-provider-zod';
-import * as productsRoutes from './route/product';
+import { ProductsRoutes } from './route/product';
+import { env } from './util/env';
 
-const app = fastify({
-	logger: true,
-});
+const app = fastify();
 
 app.register(cors, {
 	origin: env.FRONT_END_URL,
@@ -19,25 +16,21 @@ app.register(cors, {
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
-app.get('/hearth', (_,res)=>{
-	res.send('ok')
-})
-app.register(productsRoutes.routeAddProduct);
-app.register(productsRoutes.routeGetProducts);
-app.register(productsRoutes.routeDeleteProduct);
+app.get('/hearth', (_, res) => {
+	res.send('ok');
+});
+
+app.register(new ProductsRoutes().create);
+app.register(new ProductsRoutes().delete);
+app.register(new ProductsRoutes().getAll);
+app.register(new ProductsRoutes().getForCategory);
 
 app.listen(
 	{
 		port: env.PORT,
 		host: env.HOST,
 	},
-	(err, address) => {
-		if (err) {
-			console.error(err);
-			process.exit(1);
-		}
-		mongoConnectionDatabase().finally(() => {
-			console.log(`Server listening at ${address}`);
-		});
+	(_, address) => {
+		console.log(`Server listening at ${address}`);
 	},
 );
