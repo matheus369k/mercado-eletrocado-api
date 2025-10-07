@@ -2,7 +2,6 @@
 @base = http://localhost:3000/api
 @productId = {{CreateProduct.response.body.productId}}
 @userId = {{CreateUser.response.body.id}}
-@token = {{CreateUser.response.body.token}}
 @token = {{LoginUser.response.body.token}}
 
 ### HearthChecked
@@ -67,5 +66,32 @@ Content-Type: application/json
 ### ProfileUser
 # @name ProfileUser
 GET {{base}}/users/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### CreateDeliveryProduct
+# @name CreateDeliveryProduct
+POST {{base}}/products/delivery
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+[{
+  "image": "http://localhost:3000/images/product-ex.png", 
+  "name": "Product ex", 
+  "price": 1256.00
+}, {
+
+  "image": "http://localhost:3000/images/product-plus.png", 
+  "name": "Product plus", 
+  "price": 956.00
+},  {
+  "image": "http://localhost:3000/images/product-ultra.png", 
+  "name": "Product ultra", 
+  "price": 1768.00
+}]
+
+### GetDeliveryProduct
+# @name GetDeliveryProduct
+GET {{base}}/products/delivery
 Content-Type: application/json
 Authorization: Bearer {{token}}

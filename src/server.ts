@@ -5,8 +5,8 @@ import {
 	validatorCompiler,
 } from 'fastify-type-provider-zod';
 import { ProductsRoutes } from './route/product';
-import { env } from './util/env';
 import { UsersRoutes } from './route/user';
+import { env } from './util/env';
 
 const app = fastify();
 
@@ -25,6 +25,8 @@ app.register(new ProductsRoutes().create);
 app.register(new ProductsRoutes().delete);
 app.register(new ProductsRoutes().getAll);
 app.register(new ProductsRoutes().getForCategory);
+app.register(new ProductsRoutes().createDeliveries);
+app.register(new ProductsRoutes().getAllDeliveries);
 
 app.register(new UsersRoutes().create);
 app.register(new UsersRoutes().login);

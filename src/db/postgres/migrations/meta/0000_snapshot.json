@@ -1,11 +1,11 @@
 {
-  "id": "2106332d-9d2b-4fb1-96ed-8ea665d0eacb",
+  "id": "dc68faa0-3426-441a-850f-7287eabc4753",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.users_deliveries": {
-      "name": "users_deliveries",
+    "public.deliveries": {
+      "name": "deliveries",
       "schema": "",
       "columns": {
         "id": {
@@ -35,7 +35,7 @@
         },
         "price": {
           "name": "price",
-          "type": "text",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": true
         },
@@ -55,9 +55,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_deliveries_user_id_users_id_fk": {
-          "name": "users_deliveries_user_id_users_id_fk",
-          "tableFrom": "users_deliveries",
+        "deliveries_user_id_users_id_fk": {
+          "name": "deliveries_user_id_users_id_fk",
+          "tableFrom": "deliveries",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -75,8 +75,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users_favorites": {
-      "name": "users_favorites",
+    "public.favorites": {
+      "name": "favorites",
       "schema": "",
       "columns": {
         "id": {
@@ -120,9 +120,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_favorites_user_id_users_id_fk": {
-          "name": "users_favorites_user_id_users_id_fk",
-          "tableFrom": "users_favorites",
+        "favorites_user_id_users_id_fk": {
+          "name": "favorites_user_id_users_id_fk",
+          "tableFrom": "favorites",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"

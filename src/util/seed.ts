@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
-import { MongoConnection } from '@/db/mongo/mongo';
-import { MongoDatabase } from '@/db/mongo/schema/product';
+import { mongoDb } from '@/db/mongo/mongo';
 
 const seed = async () => {
 	try {
-		await MongoConnection();
-		await MongoDatabase.Products.deleteMany();
-		await MongoDatabase.Products.insertMany([
+		const { Products } = await mongoDb();
+		await Products.deleteMany();
+		await Products.insertMany([
 			{
 				model: 'Notebook Samsung Galaxy Book 3 360',
 				img: 'https://raw.githubusercontent.com/matheus369k/matheus369k.github.io/refs/heads/main/eletrocado-images/image-1-slide-1.png',
