@@ -1,5 +1,5 @@
-import { mongoDb } from '@/db/mongo/mongo';
 import { ClientError } from 'src/error/client-error';
+import { mongoDb } from '@/db/mongo/mongo';
 
 type SlideCreateProductType = {
 	slide1: string;

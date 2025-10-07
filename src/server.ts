@@ -6,6 +6,7 @@ import {
 } from 'fastify-type-provider-zod';
 import { ProductsRoutes } from './route/product';
 import { env } from './util/env';
+import { UsersRoutes } from './route/user';
 
 const app = fastify();
 
@@ -24,6 +25,10 @@ app.register(new ProductsRoutes().create);
 app.register(new ProductsRoutes().delete);
 app.register(new ProductsRoutes().getAll);
 app.register(new ProductsRoutes().getForCategory);
+
+app.register(new UsersRoutes().create);
+app.register(new UsersRoutes().login);
+app.register(new UsersRoutes().profile);
 
 app.listen(
 	{

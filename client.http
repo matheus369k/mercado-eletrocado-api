@@ -1,6 +1,9 @@
 # Variables
-@base = http://localhost:3000
+@base = http://localhost:3000/api
 @productId = {{CreateProduct.response.body.productId}}
+@userId = {{CreateUser.response.body.id}}
+@token = {{CreateUser.response.body.token}}
+@token = {{LoginUser.response.body.token}}
 
 ### HearthChecked
 # @name HearthChecked
@@ -8,7 +11,7 @@ GET {{base}}/hearth
 
 ### CreateProduct
 # @name CreateProduct
-POST {{base}}/api/products
+POST {{base}}/products
 Content-Type: application/json
 
 {
@@ -29,12 +32,40 @@ Content-Type: application/json
 
 ### GetProducts
 # @name GetProducts
-GET {{base}}/api/products
+GET {{base}}/products
 
 ### GetProductWithCategory
 # @name GetProductsWithCategory
-GET {{base}}/api/products/phone
+GET {{base}}/products/phone
 
 ### DeleteProduct
 # @name DeleteProduct
-DELETE {{base}}/api/products/{{productId}}
+DELETE {{base}}/products/{{productId}}
+
+### CreateUser
+# @name CreateUser
+POST {{base}}/users/register
+Content-Type: application/json
+
+{
+  "email": "ghome@gmail.com",
+  "name": "ghome",
+  "password": "ghome1234",
+  "cep": "55386-000"
+}
+
+### LoginUser
+# @name LoginUser
+POST {{base}}/users/login
+Content-Type: application/json
+
+{
+  "email": "ghome@gmail.com",
+  "password": "ghome1234"
+}
+
+### ProfileUser
+# @name ProfileUser
+GET {{base}}/users/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}

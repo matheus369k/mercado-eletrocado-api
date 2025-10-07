@@ -10,6 +10,8 @@ const envSchema = z.object({
 	MONGO_DATABASE_PASSWORD: z.string().min(3),
 
 	POSTGRES_DATABASE_URL: z.string().url(),
+
+	JWT_SECRET_KEY: z.string().min(10).max(200),
 });
 
 export const env = envSchema.parse(process.env);
