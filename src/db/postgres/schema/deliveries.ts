@@ -1,4 +1,4 @@
-import { numeric, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const deliveries = pgTable('deliveries', {
@@ -7,7 +7,7 @@ export const deliveries = pgTable('deliveries', {
 
 	name: text('name').notNull(),
 	image: text('image').notNull(),
-	price: numeric('price').notNull(),
+	price: integer('price').notNull(),
 	deliveryDate: text('delivery_date').notNull(),
 
 	createAt: timestamp('create_at', {

@@ -27,6 +27,9 @@ app.register(new ProductsRoutes().getAll);
 app.register(new ProductsRoutes().getForCategory);
 app.register(new ProductsRoutes().createDeliveries);
 app.register(new ProductsRoutes().getAllDeliveries);
+app.register(new ProductsRoutes().createFavorite);
+app.register(new ProductsRoutes().getAllFavorite);
+app.register(new ProductsRoutes().deleteFavorite);
 
 app.register(new UsersRoutes().create);
 app.register(new UsersRoutes().login);

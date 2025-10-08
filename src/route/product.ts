@@ -4,6 +4,9 @@ import { ProductsControllers } from 'src/controller/products';
 import { z } from 'zod/v4';
 import { ClientError } from '@/error/client-error';
 import { AuthMiddleWares } from '@/middlewares/auth';
+import { postgresDb } from '@/db/postgres/postgresql';
+import { pgSchema } from '@/db/postgres/schema';
+import { and, desc, eq } from 'drizzle-orm';
 
 const CreateProductBodySchema = z.object({
 	model: z.string().min(3),
@@ -33,16 +36,23 @@ const DeleteCategoryParamSchema = z.object({
 	id: z.string(),
 });
 
-const DeliveryBodySchema = z.array(
-	z.object({
-		name: z
-			.string('this invalid field')
-			.min(3, 'name have more 3 characters')
-			.max(400, 'name have less 400 characters'),
-		image: z.string('this invalid field').url('this invalid url'),
-		price: z.coerce.number('this invalid field'),
-	}),
-);
+const FavoriteBodySchema = z.object({
+	name: z
+		.string('this invalid field')
+		.min(3, 'name have more 3 characters')
+		.max(400, 'name have less 400 characters'),
+	image: z.string('this invalid field').url('this invalid url'),
+	price: z.coerce.number('this invalid field'),
+});
+
+const FavoriteParamSchema = z.object({
+	favoriteId: z
+		.string('this value is invalid')
+		.min(8, 'favoriteId have more 8 characters')
+		.max(100, 'favoriteId have less 100 characters'),
+});
+
+const DeliveryBodySchema = z.array(FavoriteBodySchema);
 
 export class ProductsRoutes {
 	create(app: FastifyInstance) {
@@ -159,6 +169,89 @@ export class ProductsRoutes {
 				});
 
 				return reply.send(products);
+			},
+		);
+	}
+
+	createFavorite(app: FastifyInstance) {
+		app.withTypeProvider<ZodTypeProvider>().post(
+			'/api/products/favorite',
+			{
+				preHandler: [
+					new AuthMiddleWares().userAuth,
+				],
+				schema: {
+					body: FavoriteBodySchema,
+				},
+			},
+			async (request, reply) => {
+				const { image, name, price } = request.body;
+				const userId = request.user.id;
+				if (!userId) {
+					throw new ClientError('user not have authorization');
+				}
+
+				const { favoriteId } = await new ProductsControllers().createFavorite({
+					userId,
+					price,
+					image,
+					name,
+				});
+
+				return reply.send({
+					favoriteId,
+				});
+			},
+		);
+	}
+
+	getAllFavorite(app: FastifyInstance) {
+		app.withTypeProvider<ZodTypeProvider>().get(
+			'/api/products/favorite',
+			{
+				preHandler: [
+					new AuthMiddleWares().userAuth,
+				],
+			},
+			async (request, reply) => {
+				const userId = request.user.id;
+				if (!userId) {
+					throw new ClientError('user not have authorization');
+				}
+
+				const { favorites } = await new ProductsControllers().getAllFavorites({
+					userId,
+				});
+
+				return reply.send(favorites);
+			},
+		);
+	}
+
+	deleteFavorite(app: FastifyInstance) {
+		app.withTypeProvider<ZodTypeProvider>().delete(
+			'/api/products/favorite/:favoriteId',
+			{
+				preHandler: [
+					new AuthMiddleWares().userAuth,
+				],
+				schema: {
+					params: FavoriteParamSchema,
+				},
+			},
+			async (request, reply) => {
+				const { favoriteId } = request.params;
+				const userId = request.user.id;
+				if (!userId) {
+					throw new ClientError('user not have authorization');
+				}
+
+				await new ProductsControllers().deleteFavorite({
+					favoriteId,
+					userId,
+				});
+
+				return reply.send('ok');
 			},
 		);
 	}

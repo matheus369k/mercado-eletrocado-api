@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const favorites = pgTable('favorites', {
@@ -7,7 +7,7 @@ export const favorites = pgTable('favorites', {
 
 	name: text('name').notNull(),
 	image: text('image').notNull(),
-	price: text('price').notNull(),
+	price: integer('price').notNull(),
 
 	createAt: timestamp('create_at', {
 		withTimezone: true,

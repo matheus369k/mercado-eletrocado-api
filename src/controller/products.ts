@@ -1,4 +1,4 @@
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { ClientError } from 'src/error/client-error';
 import { mongoDb } from '@/db/mongo/mongo';
 import { postgresDb } from '@/db/postgres/postgresql';
@@ -23,13 +23,19 @@ type CreateProductProps = {
 	category: string;
 };
 
-type CreateDeliveryProps = {
+type CreateFavoriteProps = {
 	userId: string;
-	products: {
-		name: string;
-		image: string;
-		price: number;
-	}[];
+	name: string;
+	image: string;
+	price: number;
+};
+
+type DeleteFavoriteProps = Pick<CreateFavoriteProps, 'userId'> & {
+	favoriteId: string;
+};
+
+type CreateDeliveryProps = Pick<CreateFavoriteProps, 'userId'> & {
+	products: Omit<CreateFavoriteProps, 'userId'>[];
 };
 
 export class ProductsControllers {
@@ -159,5 +165,77 @@ export class ProductsControllers {
 		return {
 			products,
 		};
+	}
+
+	async createFavorite(props: CreateFavoriteProps) {
+		const { image, name, price, userId } = props;
+		const [favorite] = await postgresDb
+			.insert(pgSchema.favorites)
+			.values({
+				userId,
+				price,
+				image,
+				name,
+			})
+			.returning({
+				id: pgSchema.favorites.id,
+			});
+
+		if (!favorite) {
+			throw new ClientError('error try create favorite product');
+		}
+
+		return {
+			favoriteId: favorite.id,
+		};
+	}
+
+	async getAllFavorites({ userId }: Pick<CreateFavoriteProps, 'userId'>) {
+		const favorites = await postgresDb
+			.select({
+				id: pgSchema.favorites.id,
+				createAt: pgSchema.favorites.createAt,
+				price: pgSchema.favorites.price,
+				image: pgSchema.favorites.image,
+				name: pgSchema.favorites.name,
+			})
+			.from(pgSchema.favorites)
+			.where(eq(pgSchema.favorites.userId, userId))
+			.orderBy(desc(pgSchema.favorites.createAt));
+
+		if (!favorites[0]) {
+			throw new ClientError('not found favorite product');
+		}
+
+		return {
+			favorites,
+		};
+	}
+
+	async deleteFavorite({ favoriteId, userId }: DeleteFavoriteProps) {
+		await postgresDb
+			.delete(pgSchema.favorites)
+			.where(
+				and(
+					eq(pgSchema.favorites.id, favoriteId),
+					eq(pgSchema.favorites.userId, userId),
+				),
+			);
+
+		const favorite = await postgresDb
+			.select({
+				favoriteId: pgSchema.favorites.id,
+			})
+			.from(pgSchema.favorites)
+			.where(
+				and(
+					eq(pgSchema.favorites.id, favoriteId),
+					eq(pgSchema.favorites.userId, userId),
+				),
+			);
+
+		if (favorite[0]) {
+			throw new ClientError('error try delete favorite product');
+		}
 	}
 }

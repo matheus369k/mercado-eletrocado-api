@@ -13,7 +13,7 @@ CREATE TABLE "favorites" (
 	"user_id" uuid,
 	"name" text NOT NULL,
 	"image" text NOT NULL,
-	"price" text NOT NULL,
+	"price" numeric NOT NULL,
 	"create_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

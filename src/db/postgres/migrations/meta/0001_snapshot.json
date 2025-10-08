@@ -1,6 +1,6 @@
 {
-  "id": "8da98c27-d376-4e9a-bd56-f5ce9e7d17df",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "b9f5da6f-8381-46d8-9765-9effc44e9866",
+  "prevId": "8da98c27-d376-4e9a-bd56-f5ce9e7d17df",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -35,7 +35,7 @@
         },
         "price": {
           "name": "price",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -106,7 +106,7 @@
         },
         "price": {
           "name": "price",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },

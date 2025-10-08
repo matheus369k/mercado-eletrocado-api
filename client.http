@@ -3,6 +3,7 @@
 @productId = {{CreateProduct.response.body.productId}}
 @userId = {{CreateUser.response.body.id}}
 @token = {{LoginUser.response.body.token}}
+@favoriteId = {{CreateFavoriteProduct.response.body.favoriteId}}
 
 ### HearthChecked
 # @name HearthChecked
@@ -66,7 +67,6 @@ Content-Type: application/json
 ### ProfileUser
 # @name ProfileUser
 GET {{base}}/users/profile
-Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### CreateDeliveryProduct
@@ -93,5 +93,26 @@ Authorization: Bearer {{token}}
 ### GetDeliveryProduct
 # @name GetDeliveryProduct
 GET {{base}}/products/delivery
+Authorization: Bearer {{token}}
+
+### CreateFavoriteProduct
+# @name CreateFavoriteProduct
+POST {{base}}/products/favorite
 Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "image": "http://localhost:3000/images/product-ex.png", 
+  "name": "Product Ultra", 
+  "price": 1256.00
+}
+
+### GetAllFavoriteProduct
+# @name GetAllFavoriteProduct
+GET {{base}}/products/favorite
+Authorization: Bearer {{token}}
+
+### DeleteFavoriteProduct
+# @name DeleteFavoriteProduct
+DELETE {{base}}/products/favorite/{{favoriteId}}
 Authorization: Bearer {{token}}
