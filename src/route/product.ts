@@ -3,10 +3,7 @@ import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { ProductsControllers } from 'src/controller/products';
 import { z } from 'zod/v4';
 import { ClientError } from '@/error/client-error';
-import { AuthMiddleWares } from '@/middlewares/auth';
-import { postgresDb } from '@/db/postgres/postgresql';
-import { pgSchema } from '@/db/postgres/schema';
-import { and, desc, eq } from 'drizzle-orm';
+import { AuthMiddleWares } from '@/middleware/auth';
 
 const CreateProductBodySchema = z.object({
 	model: z.string().min(3),

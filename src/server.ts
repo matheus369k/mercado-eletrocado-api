@@ -1,4 +1,7 @@
-import cors from '@fastify/cors';
+import path from 'node:path';
+import fastifyCors from '@fastify/cors';
+import fastifyMultipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
 import { fastify } from 'fastify';
 import {
 	serializerCompiler,
@@ -10,8 +13,13 @@ import { env } from './util/env';
 
 const app = fastify();
 
-app.register(cors, {
+app.register(fastifyCors, {
 	origin: env.FRONT_END_URL,
+});
+app.register(fastifyMultipart);
+app.register(fastifyStatic, {
+	root: path.resolve(__dirname, '..', 'public'),
+	prefix: '/public/',
 });
 
 app.setValidatorCompiler(validatorCompiler);
@@ -34,6 +42,7 @@ app.register(new ProductsRoutes().deleteFavorite);
 app.register(new UsersRoutes().create);
 app.register(new UsersRoutes().login);
 app.register(new UsersRoutes().profile);
+app.register(new UsersRoutes().update);
 
 app.listen(
 	{

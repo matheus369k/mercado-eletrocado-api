@@ -28,6 +28,9 @@ type LoginUserProps = Pick<
 	'email' | 'password' | 'stayConnected'
 >;
 
+type UpdateUserProps = Pick<CreateUserProps, 'name' | 'cep' | 'avatar'> &
+	UserPayloadTokenType;
+
 export class UsersControllers {
 	private generateJsonWebToken({
 		stayConnected,
@@ -129,6 +132,44 @@ export class UsersControllers {
 		return {
 			user: userLogin,
 			token,
+		};
+	}
+
+	async update(props: UpdateUserProps) {
+		const { avatar, cep, name, userId } = props;
+
+		let userUpdateData: Omit<UpdateUserProps, 'avatar' | 'userId'> & {
+			avatar?: string;
+		} = {
+			name,
+			cep,
+		};
+		if (avatar) {
+			userUpdateData = {
+				avatar,
+				name,
+				cep,
+			};
+		}
+
+		const [user] = await postgresDb
+			.update(pgSchema.users)
+			.set(userUpdateData)
+			.where(eq(pgSchema.users.id, userId))
+			.returning({
+				name: pgSchema.users.name,
+				cep: pgSchema.users.cep,
+				avatar: pgSchema.users.avatar,
+				id: pgSchema.users.id,
+				email: pgSchema.users.email,
+			});
+
+		if (!user) {
+			throw new ClientError('error try update user');
+		}
+
+		return {
+			user,
 		};
 	}
 }
