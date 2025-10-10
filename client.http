@@ -91,6 +91,11 @@ Content-Disposition: form-data; name="cep"
 55768-000
 ------separate--
 
+### DeleteUser
+# @name DeleteUser
+DELETE {{base}}/users
+Authorization: Bearer {{token}}
+
 ### CreateDeliveryProduct
 # @name CreateDeliveryProduct
 POST {{base}}/products/delivery

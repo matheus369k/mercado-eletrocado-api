@@ -6,6 +6,11 @@ import { ClientError } from '@/error/client-error';
 import { AuthMiddleWares } from '@/middleware/auth';
 import { SharpMiddleWares } from '@/middleware/sharp';
 import { UploadMiddleWares } from '@/middleware/upload';
+import { postgresDb } from '@/db/postgres/postgresql';
+import { pgSchema } from '@/db/postgres/schema';
+import { eq } from 'drizzle-orm';
+import { unlink, unlinkSync } from 'node:fs';
+import path from 'node:path';
 
 const CreateUserBodySchema = z.object({
 	name: z
@@ -144,6 +149,31 @@ export class UsersRoutes {
 				});
 
 				return reply.send(user);
+			},
+		);
+	}
+
+	delete(app: FastifyInstance) {
+		app.withTypeProvider<ZodTypeProvider>().delete(
+			'/api/users',
+			{
+				preHandler: [
+					new AuthMiddleWares().userAuth,
+				],
+			},
+			async (request, reply) => {
+				const avatar = request.user.avatar || null;
+				const userId = request.user.id;
+				if (!userId) {
+					throw new ClientError('user not have authorization');
+				}
+
+				await new UsersControllers().delete({
+					avatar,
+					userId,
+				});
+
+				return reply.send('ok');
 			},
 		);
 	}

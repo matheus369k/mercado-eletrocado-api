@@ -5,6 +5,8 @@ import { postgresDb } from '@/db/postgres/postgresql';
 import { pgSchema } from '@/db/postgres/schema';
 import { ClientError } from '@/error/client-error';
 import { env } from '@/util/env';
+import path from 'node:path';
+import { unlinkSync } from 'node:fs';
 
 type UserPayloadTokenType = {
 	userId: string;
@@ -171,5 +173,29 @@ export class UsersControllers {
 		return {
 			user,
 		};
+	}
+
+	async delete(props: Pick<UpdateUserProps, 'avatar' | 'userId'>) {
+		const { avatar, userId } = props;
+
+		await postgresDb
+			.delete(pgSchema.users)
+			.where(eq(pgSchema.users.id, userId));
+
+		const [user] = await postgresDb
+			.select({
+				userId: pgSchema.users.id,
+			})
+			.from(pgSchema.users)
+			.where(eq(pgSchema.users.id, userId));
+
+		if (user) {
+			throw new ClientError('error try delete user account');
+		}
+
+		if (avatar) {
+			const avatarPath = path.resolve(__dirname, '..', '..', avatar);
+			unlinkSync(avatarPath);
+		}
 	}
 }

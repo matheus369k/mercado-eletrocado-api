@@ -43,6 +43,7 @@ app.register(new UsersRoutes().create);
 app.register(new UsersRoutes().login);
 app.register(new UsersRoutes().profile);
 app.register(new UsersRoutes().update);
+app.register(new UsersRoutes().delete);
 
 app.listen(
 	{
