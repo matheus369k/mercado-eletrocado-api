@@ -19,7 +19,13 @@
 
 ## Descrição
 
-O projeto é uma API para o projeto de e-commerce. Tendo como objetivo, armazenar as informações necessárias para o projeto. No momento so há um banco de dados mongo, para os produtos.
+O projeto é uma API para o projeto de e-commerce. Tendo como objetivo, armazenar as informações necessárias para o projeto e salvar os dados do usuários registrados na aplicação.
+
+Funcionalidades:
+- rotas para registo, login e remoção de usuários
+- autenticação jwt, para auto login do usuário
+- rotas para cadastro, leitura e remoção de produtos
+- armazenamento e compactação de aquivos de imagem, para uso de avatars
 
 ## Iniciando
 
@@ -40,16 +46,19 @@ adicione o arquivo .env e insira as variáveis de ambiente baixo...
 
 ```bash
 PORT=3000
-HOST=0.0.0.0
 
-DATABASE_URL=mongodb://localhost:27017/?authSource=admin
+MONGO_DATABASE_URL=mongodb://localhost:27017/?authSource=admin
 MONGO_DATABASE_NAME=ghome
 MONGO_DATABASE_PASSWORD=ghome123
 
+POSTGRES_DATABASE_URL=postgresql://root:root@localhost:5432/eletrocado-api
+
 FRONT_END_URL=http://localhost:5173
+
+JWT_SECRET_KEY=2d10d7aa-e9bc-4545-ade9-60d0c2a4a0de
 ```
 
-Agora para criar o banco de dados do docker, digite o comando abaixo no terminal do projeto...
+Agora para criar os bancos de dados no docker, digite o comando abaixo no terminal:
 
 ```bash
 docker compose up -d
@@ -64,43 +73,7 @@ Por fim, inicie o projeto...
 yarn dev
 ```
 ## Rotas
-__Método HTTP GET__<br/>
-Coletar todos produtos
-```
-/api/products
-```
-Coletar produtos por categoria
-```
-/api/products/:categoria
-```
-__Método HTTP POST__<br/>
-Registar novo produtos
-```
-/api/products
-```
-```
-{
-  model: string;
-  img: string;
-  slide: {
-    slide1: string;
-    slide2: string;
-    slide3: string;
-  };
-  screen: string;
-  processor: string;
-  memory: string;
-  placeVideo: string;
-  battery: string;
-  price: number;
-  category: string;
-}
-```
-__Método HTTP DELETE__<br/>
-Deletar produtos
-```
-/api/products/:id
-```
+Para aprender ou testar as rotas da aplicação, acesse o arquivo __[client.http](/client.http)__. 
 ## 📜Licença
 
 Para o projeto fora usado a licença 🔗[MIT](/LICENSE.txt).

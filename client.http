@@ -7,7 +7,7 @@
 
 ### HearthChecked
 # @name HearthChecked
-GET {{base}}/hearth
+GET http://localhost:3000/hearth
 
 ### CreateProduct
 # @name CreateProduct
