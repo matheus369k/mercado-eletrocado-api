@@ -40,16 +40,16 @@ const FavoriteBodySchema = z.object({
 		.max(400, 'name have less 400 characters'),
 	image: z.string('this invalid field').url('this invalid url'),
 	price: z.coerce.number('this invalid field'),
+	favoriteId: z.string('this invalid field').min(10).max(200),
 });
 
-const FavoriteParamSchema = z.object({
-	favoriteId: z
-		.string('this value is invalid')
-		.min(8, 'favoriteId have more 8 characters')
-		.max(100, 'favoriteId have less 100 characters'),
-});
+const FavoriteParamSchema = FavoriteBodySchema.pick({
+	favoriteId: true,
+})
 
-const DeliveryBodySchema = z.array(FavoriteBodySchema);
+const DeliveryBodySchema = z.array(FavoriteBodySchema.omit({
+	favoriteId: true,
+}));
 
 export class ProductsRoutes {
 	create(app: FastifyInstance) {
@@ -182,13 +182,14 @@ export class ProductsRoutes {
 				},
 			},
 			async (request, reply) => {
-				const { image, name, price } = request.body;
+				const { image, name, price, favoriteId } = request.body;
 				const userId = request.user.id;
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}
 
-				const { favoriteId } = await new ProductsControllers().createFavorite({
+				const favorite = await new ProductsControllers().createFavorite({
+					favoriteId,
 					userId,
 					price,
 					image,
@@ -196,7 +197,7 @@ export class ProductsRoutes {
 				});
 
 				return reply.send({
-					favoriteId,
+					favoriteId: favorite.favoriteId,
 				});
 			},
 		);

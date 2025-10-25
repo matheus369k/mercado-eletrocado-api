@@ -1,6 +1,6 @@
 {
-  "id": "b9f5da6f-8381-46d8-9765-9effc44e9866",
-  "prevId": "8da98c27-d376-4e9a-bd56-f5ce9e7d17df",
+  "id": "57693f11-bf52-404f-b1de-8173369dae9c",
+  "prevId": "22a9bfb0-bdb1-492a-a205-5400545e5692",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -91,6 +91,12 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "favorite_id": {
+          "name": "favorite_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "name": {
           "name": "name",

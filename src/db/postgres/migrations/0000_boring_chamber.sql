@@ -3,7 +3,7 @@ CREATE TABLE "deliveries" (
 	"user_id" uuid,
 	"name" text NOT NULL,
 	"image" text NOT NULL,
-	"price" numeric NOT NULL,
+	"price" integer NOT NULL,
 	"delivery_date" text NOT NULL,
 	"create_at" timestamp with time zone DEFAULT now() NOT NULL
 );
@@ -11,9 +11,10 @@ CREATE TABLE "deliveries" (
 CREATE TABLE "favorites" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid,
+	"favorite_id" text,
 	"name" text NOT NULL,
 	"image" text NOT NULL,
-	"price" numeric NOT NULL,
+	"price" integer NOT NULL,
 	"create_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

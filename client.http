@@ -26,7 +26,7 @@ Content-Type: application/json
   "processor": "Processador 5 geração",
   "memory": "8GB de memoria",
   "placeVideo": "Rayzon 4 geração",
-  "price": 3786,
+  "price": 3786.99,
   "category": "phone"
 }
 
@@ -61,6 +61,7 @@ Content-Type: application/json
 
 {
   "email": "matheus@gmail.com",
+  "stayConnected": true,
   "password": "matheus1234"
 }
 
@@ -105,16 +106,15 @@ Authorization: Bearer {{token}}
 [{
   "image": "http://localhost:3000/images/product-ex.png", 
   "name": "Product ex", 
-  "price": 1256.00
+  "price": 112010
 }, {
-
   "image": "http://localhost:3000/images/product-plus.png", 
   "name": "Product plus", 
-  "price": 956.00
+  "price": 95005
 },  {
   "image": "http://localhost:3000/images/product-ultra.png", 
   "name": "Product ultra", 
-  "price": 1768.00
+  "price": 106080
 }]
 
 ### GetDeliveryProduct
@@ -130,8 +130,9 @@ Authorization: Bearer {{token}}
 
 {
   "image": "http://localhost:3000/images/product-ex.png", 
-  "name": "Product Ultra", 
-  "price": 1256.00
+  "name": "Product Ultra",
+  "favoriteId": "os7938302md3i8jf473983dn",
+  "price": 125000
 }
 
 ### GetAllFavoriteProduct
