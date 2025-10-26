@@ -62,11 +62,26 @@ export class ProductsControllers {
 			}
 			return acc;
 		}, {});
+
 		if (!separationProductsForCategory) {
-			return null;
+			throw new ClientError('Error trying category datas');
+		}
+
+		return {
+			products: separationProductsForCategory,
+		};
+	}
+
+	async getOne(_id: string) {
+		const { Products } = await mongoDb();
+		const product = await Products.findById({
+			_id,
+		});
+		if (!product) {
+			throw new ClientError('Not found product...');
 		}
 		return {
-			...separationProductsForCategory,
+			product,
 		};
 	}
 

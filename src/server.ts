@@ -40,7 +40,7 @@ app.get('/hearth', (_, res) => {
 
 app.register(new ProductsRoutes().create);
 app.register(new ProductsRoutes().delete);
-app.register(new ProductsRoutes().getAll);
+app.register(new ProductsRoutes().getOneOrAll);
 app.register(new ProductsRoutes().getForCategory);
 
 app.register(new DeliveriesRoutes().create);

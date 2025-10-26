@@ -1,9 +1,9 @@
 # Variables
 @base = http://localhost:3000/api
-@productId = {{CreateProduct.response.body.productId}}
 @userId = {{CreateUser.response.body.id}}
 @token = {{LoginUser.response.body.token}}
-@productId = {{CreateFavoriteProduct.response.body.productId}}
+@productId = {{CreateProduct.response.body.productId}}
+@favoriteId = {{CreateFavoriteProduct.response.body.productId}}
 
 ### HearthChecked
 # @name HearthChecked
@@ -30,9 +30,13 @@ Content-Type: application/json
   "category": "phone"
 }
 
-### GetProducts
-# @name GetProducts
+### GetAllProducts
+# @name GetAllProducts
 GET {{base}}/products
+
+### GetOneProducts
+# @name GetOneProducts
+GET {{base}}/products?productId={{productId}}
 
 ### GetProductWithCategory
 # @name GetProductsWithCategory
@@ -131,7 +135,7 @@ Authorization: Bearer {{token}}
 {
   "image": "http://localhost:3000/images/product-ex.png", 
   "name": "Product Ultra",
-  "productId": "os7938302md3i8jf473983dn",
+  "productId": "68e2f0c5eabded5d72cdfc9d",
   "price": 125000
 }
 
@@ -142,7 +146,7 @@ Authorization: Bearer {{token}}
 
 ### GetOneFavoriteProduct
 # @name GetOneFavoriteProduct
-GET {{base}}/products/favorite?productId={{productId}}
+GET {{base}}/products/favorite?productId={{favoriteId}}
 Authorization: Bearer {{token}}
 
 ### DeleteFavoriteProduct

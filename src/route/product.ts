@@ -27,6 +27,10 @@ const GetForCategoryParamSchema = z.object({
 		.max(16, 'name have less 16 characters'),
 });
 
+const GetQueryStringSchema = z.object({
+	productId: z.string('this invalid field').min(10).max(200).optional(),
+});
+
 const DeleteCategoryParamSchema = z.object({
 	id: z.string(),
 });
@@ -52,13 +56,27 @@ export class ProductsRoutes {
 		);
 	}
 
-	getAll(app: FastifyInstance) {
-		app
-			.withTypeProvider<ZodTypeProvider>()
-			.get('/api/products', async (_, reply) => {
-				const products = await new ProductsControllers().getAll();
+	getOneOrAll(app: FastifyInstance) {
+		app.withTypeProvider<ZodTypeProvider>().get(
+			'/api/products',
+			{
+				schema: {
+					querystring: GetQueryStringSchema,
+				},
+			},
+			async (request, reply) => {
+				const queryString = request.query;
+
+				if (queryString.productId) {
+					const { product } = await new ProductsControllers().getOne(
+						queryString.productId,
+					);
+					return reply.send(product);
+				}
+				const { products } = await new ProductsControllers().getAll();
 				return reply.send(products);
-			});
+			},
+		);
 	}
 
 	getForCategory(app: FastifyInstance) {
