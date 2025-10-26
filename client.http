@@ -3,7 +3,7 @@
 @productId = {{CreateProduct.response.body.productId}}
 @userId = {{CreateUser.response.body.id}}
 @token = {{LoginUser.response.body.token}}
-@favoriteId = {{CreateFavoriteProduct.response.body.favoriteId}}
+@productId = {{CreateFavoriteProduct.response.body.productId}}
 
 ### HearthChecked
 # @name HearthChecked
@@ -131,7 +131,7 @@ Authorization: Bearer {{token}}
 {
   "image": "http://localhost:3000/images/product-ex.png", 
   "name": "Product Ultra",
-  "favoriteId": "os7938302md3i8jf473983dn",
+  "productId": "os7938302md3i8jf473983dn",
   "price": 125000
 }
 
@@ -140,7 +140,12 @@ Authorization: Bearer {{token}}
 GET {{base}}/products/favorite
 Authorization: Bearer {{token}}
 
+### GetOneFavoriteProduct
+# @name GetOneFavoriteProduct
+GET {{base}}/products/favorite?productId={{productId}}
+Authorization: Bearer {{token}}
+
 ### DeleteFavoriteProduct
 # @name DeleteFavoriteProduct
-DELETE {{base}}/products/favorite/{{favoriteId}}
+DELETE {{base}}/products/favorite/{{productId}}
 Authorization: Bearer {{token}}

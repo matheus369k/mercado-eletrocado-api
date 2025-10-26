@@ -4,8 +4,8 @@ import { users } from './users';
 export const favorites = pgTable('favorites', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	userId: uuid('user_id').references(() => users.id),
-	favoriteId: text('favorite_id').notNull(),
-	
+	productId: text('product_id').notNull(),
+
 	name: text('name').notNull(),
 	image: text('image').notNull(),
 	price: integer('price').notNull(),
