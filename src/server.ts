@@ -7,10 +7,11 @@ import {
 	serializerCompiler,
 	validatorCompiler,
 } from 'fastify-type-provider-zod';
+import { DeliveriesRoutes } from './route/delivery';
+import { FavoritesRoutes } from './route/favorite';
 import { ProductsRoutes } from './route/product';
 import { UsersRoutes } from './route/user';
 import { env } from './util/env';
-import { FavoritesRoutes } from './route/favorite';
 
 const app = fastify();
 
@@ -41,8 +42,9 @@ app.register(new ProductsRoutes().create);
 app.register(new ProductsRoutes().delete);
 app.register(new ProductsRoutes().getAll);
 app.register(new ProductsRoutes().getForCategory);
-app.register(new ProductsRoutes().createDeliveries);
-app.register(new ProductsRoutes().getAllDeliveries);
+
+app.register(new DeliveriesRoutes().create);
+app.register(new DeliveriesRoutes().getAll);
 
 app.register(new FavoritesRoutes().get);
 app.register(new FavoritesRoutes().create);

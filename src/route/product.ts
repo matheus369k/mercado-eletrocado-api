@@ -2,8 +2,6 @@ import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { ProductsControllers } from 'src/controller/products';
 import { z } from 'zod/v4';
-import { ClientError } from '@/error/client-error';
-import { AuthMiddleWares } from '@/middleware/auth';
 
 const CreateProductBodySchema = z.object({
 	model: z.string().min(3),
@@ -32,17 +30,6 @@ const GetForCategoryParamSchema = z.object({
 const DeleteCategoryParamSchema = z.object({
 	id: z.string(),
 });
-
-const DeliveryBodySchema = z.array(
-	z.object({
-		name: z
-			.string('this invalid field')
-			.min(3, 'name have more 3 characters')
-			.max(400, 'name have less 400 characters'),
-		image: z.string('this invalid field').url('this invalid url'),
-		price: z.coerce.number('this invalid field'),
-	}),
-);
 
 export class ProductsRoutes {
 	create(app: FastifyInstance) {
@@ -106,59 +93,6 @@ export class ProductsRoutes {
 				return reply.send({
 					productId,
 				});
-			},
-		);
-	}
-
-	createDeliveries(app: FastifyInstance) {
-		app.withTypeProvider<ZodTypeProvider>().post(
-			'/api/products/delivery',
-			{
-				preHandler: [
-					new AuthMiddleWares().userAuth,
-				],
-				schema: {
-					body: DeliveryBodySchema,
-				},
-			},
-			async (request, reply) => {
-				const userId = request.user.id;
-				if (!userId) {
-					throw new ClientError('user not have authorization');
-				}
-
-				const { productsCount } =
-					await new ProductsControllers().createDeliveries({
-						products: request.body,
-						userId,
-					});
-
-				return reply.send({
-					productsCount,
-				});
-			},
-		);
-	}
-
-	getAllDeliveries(app: FastifyInstance) {
-		app.withTypeProvider<ZodTypeProvider>().get(
-			'/api/products/delivery',
-			{
-				preHandler: [
-					new AuthMiddleWares().userAuth,
-				],
-			},
-			async (request, reply) => {
-				const userId = request.user.id;
-				if (!userId) {
-					throw new ClientError('user not have authorization');
-				}
-
-				const { products } = await new ProductsControllers().getAllDeliveries({
-					userId,
-				});
-
-				return reply.send(products);
 			},
 		);
 	}
