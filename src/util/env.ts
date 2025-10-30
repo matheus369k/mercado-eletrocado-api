@@ -11,7 +11,10 @@ const envSchema = z.object({
 
 	POSTGRES_DATABASE_URL: z.string().url(),
 
-	JWT_SECRET_KEY: z.string().min(10).max(200),
+	REDIS_DATABASE_URL: z.string().url(),
+
+	JWT_REFRESH_SECRET_KEY: z.string().min(10).max(200),
+	JWT_ACCESS_SECRET_KEY: z.string().min(10).max(200),
 });
 
 export const env = envSchema.parse(process.env);

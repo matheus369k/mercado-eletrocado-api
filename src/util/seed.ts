@@ -21,7 +21,7 @@ const seed = async () => {
 				processor: 'Intel Core i5-1135G7',
 				memory: '8 GB de RAM, 256 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Intel Iris Xe Graphics',
-				price: 9238.96,
+				price: 923896,
 				category: 'notebook',
 			},
 			{
@@ -39,7 +39,7 @@ const seed = async () => {
 				processor: 'Intel Core i5-1135G7',
 				memory: '8 GB de RAM, 512 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Intel Iris Xe Graphics',
-				price: 2564.05,
+				price: 256405,
 
 				category: 'notebook',
 			},
@@ -58,7 +58,7 @@ const seed = async () => {
 				processor: 'Intel Core i7-1165G7',
 				memory: '16 GB de RAM, 1 TB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Intel Iris Xe Graphics 2',
-				price: 3181.55,
+				price: 318155,
 
 				category: 'notebook',
 			},
@@ -77,7 +77,7 @@ const seed = async () => {
 				processor: 'Intel Core i7-1165G7',
 				memory: '16 GB de RAM, 512 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Intel Iris Xe Graphics 1',
-				price: 3041.99,
+				price: 304199,
 
 				category: 'notebook',
 			},
@@ -96,7 +96,7 @@ const seed = async () => {
 				processor: 'Intel Core i5-11300H',
 				memory: '8 GB de RAM, 512 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo dedicada NVIDIA GeForce RTX 3050 1',
-				price: 2249.99,
+				price: 224999,
 
 				category: 'notebook',
 			},
@@ -115,7 +115,7 @@ const seed = async () => {
 				processor: 'M2',
 				memory: '16 GB de RAM, 2 TB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Intel Iris Xe Graphics 1',
-				price: 2345.99,
+				price: 234599,
 
 				category: 'tablet',
 			},
@@ -134,7 +134,7 @@ const seed = async () => {
 				processor: 'Qualcomm Snapdragon 888',
 				memory: '8 GB de RAM, 256 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Adreno 660 1',
-				price: 1519.99,
+				price: 151999,
 
 				category: 'tablet',
 			},
@@ -153,7 +153,7 @@ const seed = async () => {
 				processor: 'A15 Bionic',
 				memory: '4 GB de RAM, 256 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Apple GPU 1',
-				price: 1526.99,
+				price: 152699,
 
 				category: 'tablet',
 			},
@@ -172,7 +172,7 @@ const seed = async () => {
 				processor: 'Qualcomm Snapdragon 7c Gen 2',
 				memory: '8 GB de RAM, 256 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Adreno 618 1',
-				price: 1926.99,
+				price: 192699,
 
 				category: 'tablet',
 			},
@@ -191,7 +191,7 @@ const seed = async () => {
 				processor: 'Intel Core i7-1185G7',
 				memory: '16 GB de RAM, 512 GB de armazenamento interno',
 				placeVideo: 'placa de vídeo integrada Intel Iris Xe Graphics 1',
-				price: 1758.99,
+				price: 175899,
 
 				category: 'tablet',
 			},
@@ -213,7 +213,7 @@ const seed = async () => {
 				memory: '12 GB de RAM, 256 GB de armazenamento interno',
 				battery:
 					'Li-Po 5000 mAh, carregamento rápido de 25 W, carregamento rápido sem fio de 15 W, carregamento reverso sem fio de 4,5 W',
-				price: 4234.99,
+				price: 423499,
 
 				category: 'phone',
 			},
@@ -232,7 +232,7 @@ const seed = async () => {
 				processor: 'Qualcomm Snapdragon 750G 5G (8 nm)',
 				memory: '4 GB de RAM, 128 GB de armazenamento interno',
 				battery: ' Li-Po 5000 mAh, carregamento rápido de 20 W',
-				price: 1365.99,
+				price: 136599,
 
 				category: 'phone',
 			},
@@ -253,7 +253,7 @@ const seed = async () => {
 				memory: '12 GB de RAM, 512 GB de armazenamento interno',
 				battery:
 					'Li-Po 5000 mAh, carregamento rápido de 25 W, carregamento rápido sem fio de 15 W, carregamento reverso sem fio de 4,5 W',
-				price: 2674.99,
+				price: 267499,
 
 				category: 'phone',
 			},
@@ -274,7 +274,7 @@ const seed = async () => {
 				memory: '4 GB de RAM, 128 GB de armazenamento interno',
 				battery:
 					'Li-Ion 2815 mAh, carregamento rápido de 20 W, carregamento sem fio de 15 W, carregamento reverso sem fio de 7,5 W',
-				price: 6689.99,
+				price: 668999,
 
 				category: 'phone',
 			},
@@ -293,7 +293,7 @@ const seed = async () => {
 				processor: 'Qualcomm Snapdragon 750G 5G (8 nm)',
 				memory: '4 GB de RAM, 128 GB de armazenamento interno',
 				battery: 'Li-Po 5000 mAh, carregamento rápido de 20 W',
-				price: 1542.99,
+				price: 154299,
 
 				category: 'phone',
 			},

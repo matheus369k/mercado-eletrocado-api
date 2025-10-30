@@ -1,195 +1,174 @@
-import bcrypt from 'bcrypt'
-import { eq } from 'drizzle-orm'
-import jwt from 'jsonwebtoken'
-import { postgresDb } from '@/db/postgres/postgresql'
-import { pgSchema } from '@/db/postgres/schema'
-import { ClientError } from '@/error/client-error'
-import { env } from '@/util/env'
-import path from 'node:path'
-import { unlinkSync } from 'node:fs'
-
-type UserPayloadTokenType = {
-  userId: string
-}
-
-interface GenerateJsonWebTokenProps extends UserPayloadTokenType {
-  stayConnected: boolean
-}
+import { unlinkSync } from 'node:fs';
+import path from 'node:path';
+import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
+import { postgresDb } from '@/db/postgres/postgresql';
+import { pgSchema } from '@/db/postgres/schema';
+import { ClientError } from '@/error/client-error';
+import type { UserPayloadTokenType } from '@/util/token';
 
 type CreateUserProps = {
-  stayConnected: boolean
-  avatar: string | null
-  password: string
-  email: string
-  name: string
-  cep: string
-}
+	avatar: string | null;
+	password: string;
+	email: string;
+	name: string;
+	cep: string;
+};
 
-type LoginUserProps = Pick<
-  CreateUserProps,
-  'email' | 'password' | 'stayConnected'
->
+type LoginUserProps = Pick<CreateUserProps, 'email' | 'password'>;
 
 type UpdateUserProps = Pick<CreateUserProps, 'name' | 'cep' | 'avatar'> &
-  UserPayloadTokenType
+	Pick<UserPayloadTokenType, 'userId'>;
 
 export class UsersControllers {
-  private generateJsonWebToken({
-    stayConnected,
-    userId,
-  }: GenerateJsonWebTokenProps) {
-    const expiresIn = stayConnected ? '30d' : '10s'
+	async create(props: CreateUserProps) {
+		const { avatar, cep, email, name, password } = props;
+		const [userAlreadyAccount] = await postgresDb
+			.select({
+				id: pgSchema.users.id,
+			})
+			.from(pgSchema.users)
+			.where(eq(pgSchema.users.email, email))
+			.limit(1);
+		if (userAlreadyAccount) {
+			throw new ClientError('user already account');
+		}
 
-    const token = jwt.sign(
-      {
-        userId,
-      } as UserPayloadTokenType,
-      env.JWT_SECRET_KEY,
-      {
-        expiresIn,
-      }
-    )
+		const cryptPass = await bcrypt.hash(password, 10);
+		const [user] = await postgresDb
+			.insert(pgSchema.users)
+			.values({
+				password: cryptPass,
+				avatar: avatar,
+				email,
+				name,
+				cep,
+			})
+			.returning({
+				avatar: pgSchema.users.avatar,
+				email: pgSchema.users.email,
+				name: pgSchema.users.name,
+				cep: pgSchema.users.cep,
+				id: pgSchema.users.id,
+			});
 
-    return token
-  }
+		if (!user) {
+			throw new ClientError('error try create user');
+		}
 
-  async create(props: CreateUserProps) {
-    const { avatar, cep, email, name, password, stayConnected } = props
-    const [userAlreadyAccount] = await postgresDb
-      .select({
-        useId: pgSchema.users.id,
-      })
-      .from(pgSchema.users)
-      .where(eq(pgSchema.users.email, email))
-      .limit(1)
-    if (userAlreadyAccount) {
-      throw new ClientError('user already account')
-    }
+		return {
+			user,
+		};
+	}
 
-    const cryptPass = await bcrypt.hash(password, 10)
-    const [user] = await postgresDb
-      .insert(pgSchema.users)
-      .values({
-        password: cryptPass,
-        avatar: avatar,
-        email,
-        name,
-        cep,
-      })
-      .returning({
-        avatar: pgSchema.users.avatar,
-        email: pgSchema.users.email,
-        name: pgSchema.users.name,
-        cep: pgSchema.users.cep,
-        id: pgSchema.users.id,
-      })
+	async login(props: LoginUserProps) {
+		const { email, password } = props;
+		const [user] = await postgresDb
+			.select({
+				password: pgSchema.users.password,
+				avatar: pgSchema.users.avatar,
+				email: pgSchema.users.email,
+				name: pgSchema.users.name,
+				cep: pgSchema.users.cep,
+				id: pgSchema.users.id,
+			})
+			.from(pgSchema.users)
+			.where(eq(pgSchema.users.email, email));
 
-    if (!user) {
-      throw new ClientError('error try create user')
-    }
+		if (!user) {
+			throw new ClientError('user not have account');
+		}
+		const verifyPass = await bcrypt.compare(password, user.password);
+		if (!verifyPass) {
+			throw new ClientError('user not have authorization');
+		}
+		const { password: _, ...userLogin } = user;
 
-    const token = this.generateJsonWebToken({
-      stayConnected,
-      userId: user.id,
-    })
+		return {
+			user: userLogin,
+		};
+	}
 
-    return {
-      user,
-      token,
-    }
-  }
+	async profile({ userId }: Pick<UpdateUserProps, 'userId'>) {
+		const [user] = await postgresDb
+			.select({
+				avatar: pgSchema.users.avatar,
+				email: pgSchema.users.email,
+				name: pgSchema.users.name,
+				cep: pgSchema.users.cep,
+				id: pgSchema.users.id,
+			})
+			.from(pgSchema.users)
+			.where(eq(pgSchema.users.id, userId));
 
-  async login(props: LoginUserProps) {
-    const { email, password, stayConnected } = props
-    const [user] = await postgresDb
-      .select({
-        password: pgSchema.users.password,
-        avatar: pgSchema.users.avatar,
-        email: pgSchema.users.email,
-        name: pgSchema.users.name,
-        cep: pgSchema.users.cep,
-        id: pgSchema.users.id,
-      })
-      .from(pgSchema.users)
-      .where(eq(pgSchema.users.email, email))
+		if (!user) {
+			throw new ClientError('user not have account');
+		}
 
-    if (!user) {
-      throw new ClientError('user not have account')
-    }
-    const verifyPass = await bcrypt.compare(password, user.password)
-    if (!verifyPass) {
-      throw new ClientError('user not have authorization')
-    }
-    const { password: _, ...userLogin } = user
+		return {
+			user,
+		};
+	}
 
-    const token = this.generateJsonWebToken({
-      stayConnected,
-      userId: user.id,
-    })
+	async update(props: UpdateUserProps) {
+		const { avatar, cep, name, userId } = props;
 
-    return {
-      user: userLogin,
-      token,
-    }
-  }
+		let userUpdateData: Omit<UpdateUserProps, 'avatar' | 'userId'> & {
+			avatar?: string;
+		} = {
+			name,
+			cep,
+		};
+		if (avatar) {
+			userUpdateData = {
+				avatar,
+				name,
+				cep,
+			};
+		}
 
-  async update(props: UpdateUserProps) {
-    const { avatar, cep, name, userId } = props
+		const [user] = await postgresDb
+			.update(pgSchema.users)
+			.set(userUpdateData)
+			.where(eq(pgSchema.users.id, userId))
+			.returning({
+				name: pgSchema.users.name,
+				cep: pgSchema.users.cep,
+				avatar: pgSchema.users.avatar,
+				id: pgSchema.users.id,
+				email: pgSchema.users.email,
+			});
 
-    let userUpdateData: Omit<UpdateUserProps, 'avatar' | 'userId'> & {
-      avatar?: string
-    } = {
-      name,
-      cep,
-    }
-    if (avatar) {
-      userUpdateData = {
-        avatar,
-        name,
-        cep,
-      }
-    }
+		if (!user) {
+			throw new ClientError('error try update user');
+		}
 
-    const [user] = await postgresDb
-      .update(pgSchema.users)
-      .set(userUpdateData)
-      .where(eq(pgSchema.users.id, userId))
-      .returning({
-        name: pgSchema.users.name,
-        cep: pgSchema.users.cep,
-        avatar: pgSchema.users.avatar,
-        id: pgSchema.users.id,
-        email: pgSchema.users.email,
-      })
+		return {
+			user,
+		};
+	}
 
-    if (!user) {
-      throw new ClientError('error try update user')
-    }
+	async delete(props: Pick<UpdateUserProps, 'avatar' | 'userId'>) {
+		const { avatar, userId } = props;
 
-    return {
-      user,
-    }
-  }
+		await postgresDb
+			.delete(pgSchema.users)
+			.where(eq(pgSchema.users.id, userId));
 
-  async delete(props: Pick<UpdateUserProps, 'avatar' | 'userId'>) {
-    const { avatar, userId } = props
+		const [user] = await postgresDb
+			.select({
+				userId: pgSchema.users.id,
+			})
+			.from(pgSchema.users)
+			.where(eq(pgSchema.users.id, userId));
 
-    await postgresDb.delete(pgSchema.users).where(eq(pgSchema.users.id, userId))
+		if (user) {
+			throw new ClientError('error try delete user account');
+		}
 
-    const [user] = await postgresDb
-      .select({
-        userId: pgSchema.users.id,
-      })
-      .from(pgSchema.users)
-      .where(eq(pgSchema.users.id, userId))
-
-    if (user) {
-      throw new ClientError('error try delete user account')
-    }
-
-    if (avatar) {
-      const avatarPath = path.resolve(__dirname, '..', '..', avatar)
-      unlinkSync(avatarPath)
-    }
-  }
+		if (avatar) {
+			const avatarPath = path.resolve(__dirname, '..', '..', avatar);
+			unlinkSync(avatarPath);
+		}
+	}
 }

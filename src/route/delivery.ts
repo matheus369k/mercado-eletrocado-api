@@ -4,6 +4,7 @@ import { DeliveriesControllers } from 'src/controller/deliveries';
 import { z } from 'zod/v4';
 import { ClientError } from '@/error/client-error';
 import { AuthMiddleWares } from '@/middleware/auth';
+import { UserPayloadTokenSchema } from '@/util/token';
 
 const DeliveryBodySchema = z.array(
 	z.object({
@@ -29,7 +30,7 @@ export class DeliveriesRoutes {
 				},
 			},
 			async (request, reply) => {
-				const userId = request.user.id;
+				const { userId } = UserPayloadTokenSchema.parse(request.user);
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}
@@ -55,7 +56,7 @@ export class DeliveriesRoutes {
 				],
 			},
 			async (request, reply) => {
-				const userId = request.user.id;
+				const { userId } = UserPayloadTokenSchema.parse(request.user);
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}

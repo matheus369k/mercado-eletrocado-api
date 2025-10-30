@@ -1,7 +1,13 @@
 import { existsSync, renameSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
 import multer from 'fastify-multer';
+import { z } from 'zod';
 import { ClientError } from '@/error/client-error';
+
+const UserPayloadTokenSchema = z.object({
+	userId: z.string(),
+	avatar: z.string().or(z.null()).default(null),
+});
 
 export class UploadMiddleWares {
 	private readonly rootUpload = 'public/uploads/';
@@ -26,7 +32,7 @@ export class UploadMiddleWares {
 		storage: multer.diskStorage({
 			destination: this.rootUpload,
 			filename: (req, file, cb) => {
-				const userId = req.user.id;
+				const { userId } = UserPayloadTokenSchema.parse(req.user);
 				if (!userId) {
 					throw new ClientError('user not authorization');
 				}

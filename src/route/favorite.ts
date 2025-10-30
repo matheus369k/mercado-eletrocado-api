@@ -4,6 +4,7 @@ import { FavoritesControllers } from 'src/controller/favorites';
 import { z } from 'zod/v4';
 import { ClientError } from '@/error/client-error';
 import { AuthMiddleWares } from '@/middleware/auth';
+import { UserPayloadTokenSchema } from '@/util/token';
 
 const FavoriteBodySchema = z.object({
 	name: z
@@ -32,8 +33,8 @@ export class FavoritesRoutes {
 				},
 			},
 			async (request, reply) => {
+				const { userId } = UserPayloadTokenSchema.parse(request.user);
 				const { image, name, price, productId } = request.body;
-				const userId = request.user.id;
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}
@@ -71,8 +72,8 @@ export class FavoritesRoutes {
 				},
 			},
 			async (request, reply) => {
+				const { userId } = UserPayloadTokenSchema.parse(request.user);
 				const querystring = request.query;
-				const userId = request.user.id;
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}
@@ -106,8 +107,8 @@ export class FavoritesRoutes {
 				},
 			},
 			async (request, reply) => {
+				const { userId } = UserPayloadTokenSchema.parse(request.user);
 				const { productId } = request.params;
-				const userId = request.user.id;
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}
