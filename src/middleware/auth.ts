@@ -1,6 +1,8 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { ClientError } from '@/error/client-error';
+import { env } from '@/util/env';
 
 const UserPayloadTokenSchema = z.object({
 	userId: z.string(),
@@ -8,11 +10,14 @@ const UserPayloadTokenSchema = z.object({
 });
 
 export class AuthMiddleWares {
-	async userAuth(request: FastifyRequest, _: FastifyReply) {
+	async userAuth(request: FastifyRequest, reply: FastifyReply) {
 		const verifyAccessToken = await request.jwtVerify();
 
 		const user = UserPayloadTokenSchema.parse(verifyAccessToken);
 		if (!user) {
+			reply.clearCookie('accessToken', {
+				path: '/',
+			});
 			throw new ClientError('user not authorization');
 		}
 	}

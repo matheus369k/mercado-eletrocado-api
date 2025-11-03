@@ -2,12 +2,12 @@ import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { z } from 'zod/v4';
 import { UsersControllers } from '@/controller/users';
+import { redis } from '@/db/redis/redis';
 import { ClientError } from '@/error/client-error';
 import { AuthMiddleWares } from '@/middleware/auth';
 import { SharpMiddleWares } from '@/middleware/sharp';
 import { UploadMiddleWares } from '@/middleware/upload';
 import { AuthorizationToken, UserPayloadTokenSchema } from '@/util/token';
-import { redis } from '@/db/redis/redis';
 
 const CreateUserBodySchema = z.object({
 	name: z
@@ -21,11 +21,13 @@ const CreateUserBodySchema = z.object({
 		.max(60, 'name have less 60 characters'),
 	cep: z.string('cep is invalid'),
 	avatar: z.string().or(z.null()).default(null),
+	stayConnected: z.boolean().optional().default(false),
 });
 
 const LoginUserBodySchema = CreateUserBodySchema.pick({
 	email: true,
 	password: true,
+	stayConnected: true,
 });
 
 const UpdateUserBodySchema = CreateUserBodySchema.pick({
@@ -56,7 +58,8 @@ export class UsersRoutes {
 				},
 			},
 			async (request, reply) => {
-				const { avatar, cep, email, name, password } = request.body;
+				const { avatar, cep, email, name, password, stayConnected } =
+					request.body;
 				const { user } = await new UsersControllers().create({
 					password,
 					avatar,
@@ -72,28 +75,31 @@ export class UsersRoutes {
 				const refreshToken = new AuthorizationToken().generateRefreshToken({
 					avatar: user.avatar,
 					userId: user.id,
+					stayConnected,
 				});
 
-				const ExpiredInOneWeek = 7 * 24 * 60 * 60;
 				await redis.set(
 					`refresh:${refreshToken}`,
 					user.id,
 					'EX',
-					ExpiredInOneWeek,
+					new AuthorizationToken(stayConnected).refreshTokenAge,
 				);
 
 				return reply
-					.setCookie('refreshToken', refreshToken, {
-						maxAge: ExpiredInOneWeek,
-						httpOnly: true,
-						secure: true,
+					.setCookie('accessToken', accessToken, {
+						maxAge: new AuthorizationToken().accessTokenAge,
 						sameSite: 'strict',
-						path: '/token',
+						secure: true,
+						path: '/',
 					})
-					.send({
-						accessToken,
-						user,
-					});
+					.setCookie('refreshToken', refreshToken, {
+						maxAge: new AuthorizationToken(stayConnected).refreshCookieAge,
+						sameSite: 'strict',
+						httpOnly: true,
+						path: '/token',
+						secure: true,
+					})
+					.send(user);
 			},
 		);
 	}
@@ -107,41 +113,45 @@ export class UsersRoutes {
 				},
 			},
 			async (request, reply) => {
-				const { email, password } = request.body;
+				const { email, password, stayConnected } = request.body;
 				const { user } = await new UsersControllers().login({
 					password,
 					email,
 				});
 
-				const accessToken = new AuthorizationToken().generateAccessToken({
+				const authorization = new AuthorizationToken(stayConnected);
+				const accessToken = authorization.generateAccessToken({
 					avatar: user.avatar,
 					userId: user.id,
 				});
-				const refreshToken = new AuthorizationToken().generateRefreshToken({
+				const refreshToken = authorization.generateRefreshToken({
 					avatar: user.avatar,
 					userId: user.id,
+					stayConnected,
 				});
 
-				const ExpiredInOneWeek = 7 * 24 * 60 * 60;
 				await redis.set(
 					`refresh:${refreshToken}`,
 					user.id,
 					'EX',
-					ExpiredInOneWeek,
+					authorization.refreshTokenAge,
 				);
 
 				return reply
-					.setCookie('refreshToken', refreshToken, {
-						maxAge: ExpiredInOneWeek,
-						httpOnly: true,
+					.setCookie('accessToken', accessToken, {
+						maxAge: authorization.accessTokenAge,
+						sameSite: 'strict',
 						secure: true,
+						path: '/',
+					})
+					.setCookie('refreshToken', refreshToken, {
+						maxAge: authorization.refreshCookieAge,
 						sameSite: 'strict',
 						path: '/token',
+						httpOnly: true,
+						secure: true,
 					})
-					.send({
-						accessToken,
-						user,
-					});
+					.send(user);
 			},
 		);
 	}
@@ -209,18 +219,14 @@ export class UsersRoutes {
 			},
 			async (request, reply) => {
 				const { userId } = UserPayloadTokenSchema.parse(request.user);
-				const refreshToken = request.cookies.refresh;
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}
 
-				await redis.del(`refresh:${refreshToken}`);
-
 				return reply
-					.clearCookie('refreshToken', {
-						path: '/token',
+					.clearCookie('accessToken', {
+						path: '/',
 					})
-					.clearCookie('accessToken')
 					.send('ok');
 			},
 		);
@@ -236,7 +242,6 @@ export class UsersRoutes {
 			},
 			async (request, reply) => {
 				const { avatar, userId } = UserPayloadTokenSchema.parse(request.user);
-				const refreshToken = request.cookies.refresh;
 				if (!userId) {
 					throw new ClientError('user not have authorization');
 				}
@@ -246,13 +251,10 @@ export class UsersRoutes {
 					userId,
 				});
 
-				await redis.del(`refresh:${refreshToken}`);
-
 				return reply
-					.clearCookie('refreshToken', {
-						path: '/token',
+					.clearCookie('accessToken', {
+						path: '/',
 					})
-					.clearCookie('accessToken')
 					.send('ok');
 			},
 		);

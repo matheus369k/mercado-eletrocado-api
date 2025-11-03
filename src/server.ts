@@ -28,6 +28,7 @@ app.register(fastifyCors, {
 		'DELETE',
 	],
 });
+app.register(fastifyCookie);
 app.register(fastifyJwt, {
 	secret: env.JWT_ACCESS_SECRET_KEY,
 	cookie: {
@@ -35,7 +36,6 @@ app.register(fastifyJwt, {
 		signed: false,
 	},
 });
-app.register(fastifyCookie);
 app.register(fastifyMultipart);
 app.register(fastifyStatic, {
 	root: path.resolve(__dirname, '..', 'public'),
@@ -50,6 +50,7 @@ app.get('/hearth', (_, res) => {
 });
 
 app.register(new TokenRoutes().refreshAccessToken);
+app.register(new TokenRoutes().deleteRefreshToken);
 
 app.register(new ProductsRoutes().create);
 app.register(new ProductsRoutes().delete);

@@ -1,9 +1,8 @@
 # Variables
 @base = http://localhost:3000/api
 @userId = {{CreateUser.response.body.id}}
-@accessToken = {{LoginUser.response.body.accessToken}} 
-@accessToken = {{GenerateAccessNewToken.response.body.accessToken}}
-@refreshToken = {{LoginUser.response.headers.set-cookie}} 
+@cookies = {{LoginUser.response.headers.set-cookie}} 
+@accessToken = {{GenerateAccessNewToken.response.headers.set-cookie}} 
 @productId = {{CreateProduct.response.body.productId}}
 @favoriteId = {{CreateFavoriteProduct.response.body.productId}}
 
@@ -14,7 +13,12 @@ GET http://localhost:3000/hearth
 ### 
 # @name GenerateAccessNewToken
 GET http://localhost:3000/token
-Cookie: {{refreshToken}};
+Cookie: {{cookies}};
+
+### 
+# @name DeleteRefreshToken
+DELETE http://localhost:3000/token
+Cookie: {{cookies}};
 
 ### CreateProduct
 # @name CreateProduct
@@ -78,13 +82,13 @@ Content-Type: application/json
 ### ProfileUser
 # @name ProfileUser
 GET {{base}}/users/profile
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 ### UpdateUserProfile
 # @name UpdateUserProfile
 PATCH {{base}}/users/update
 Content-Type: multipart/form-data; boundary=----separate
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 ------separate
 # Images for test: paimon.png | hatsune-miku.jpg
@@ -105,18 +109,18 @@ Content-Disposition: form-data; name="cep"
 ### LogoutUser
 # @name LogoutUser
 DELETE {{base}}/users/logout
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 ### DeleteUser
 # @name DeleteUser
 DELETE {{base}}/users/delete
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 ### CreateDeliveryProduct
 # @name CreateDeliveryProduct
 POST {{base}}/products/delivery
 Content-Type: application/json
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 [{
   "image": "http://localhost:3000/images/product-ex.png", 
@@ -135,13 +139,13 @@ Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
 ### GetDeliveryProduct
 # @name GetDeliveryProduct
 GET {{base}}/products/delivery
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 ### CreateFavoriteProduct
 # @name CreateFavoriteProduct
 POST {{base}}/products/favorite
 Content-Type: application/json
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 {
   "image": "http://localhost:3000/images/product-ex.png", 
@@ -153,14 +157,14 @@ Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
 ### GetAllFavoriteProduct
 # @name GetAllFavoriteProduct
 GET {{base}}/products/favorite
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 ### GetOneFavoriteProduct
 # @name GetOneFavoriteProduct
 GET {{base}}/products/favorite?productId={{favoriteId}}
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
 
 ### DeleteFavoriteProduct
 # @name DeleteFavoriteProduct
 DELETE {{base}}/products/favorite/{{productId}}
-Cookie: accessToken={{accessToken}}; refreshToken={{refreshToken}};
+Cookie: {{cookies}}
