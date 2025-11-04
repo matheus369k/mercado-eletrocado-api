@@ -8,6 +8,7 @@ import { UserPayloadTokenSchema } from '@/util/token';
 
 const DeliveryBodySchema = z.array(
 	z.object({
+		productId: z.string('this invalid field').min(10).max(200),
 		name: z
 			.string('this invalid field')
 			.min(3, 'name have more 3 characters')

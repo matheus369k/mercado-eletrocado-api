@@ -4,6 +4,7 @@ import { users } from './users';
 export const deliveries = pgTable('deliveries', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	userId: uuid('user_id').references(() => users.id),
+	productId: text('product_id').notNull(),
 
 	name: text('name').notNull(),
 	image: text('image').notNull(),

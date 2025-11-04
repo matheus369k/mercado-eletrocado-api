@@ -1,0 +1,1 @@
+ALTER TABLE "deliveries" ADD COLUMN "product_id" uuid NOT NULL;

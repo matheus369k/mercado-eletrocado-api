@@ -6,6 +6,7 @@ import { pgSchema } from '@/db/postgres/schema';
 type CreateDeliveryProps = {
 	userId: string;
 	products: {
+		productId: string;
 		name: string;
 		image: string;
 		price: number;
@@ -17,11 +18,12 @@ export class DeliveriesControllers {
 		const products = props.products.map((product) => {
 			const fourteenDays = 1000 * 60 * 60 * 24 * 14;
 			const deliveryDate = new Date(Date.now() + fourteenDays).toISOString();
-			const { image, name, price } = product;
+			const { image, name, price, productId } = product;
 
 			return {
 				userId: props.userId,
 				deliveryDate,
+				productId,
 				price,
 				image,
 				name,
@@ -48,6 +50,7 @@ export class DeliveriesControllers {
 		const products = await postgresDb
 			.select({
 				deliveryDate: pgSchema.deliveries.deliveryDate,
+				productId: pgSchema.deliveries.productId,
 				price: pgSchema.deliveries.price,
 				image: pgSchema.deliveries.image,
 				name: pgSchema.deliveries.name,
