@@ -1,12 +1,11 @@
+import { renameSync } from 'node:fs';
 import path from 'node:path';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import sharp from 'sharp';
 import { z } from 'zod';
-import { ClientError } from '@/error/client-error';
-import { renameSync } from 'node:fs';
 
-const UpdateFile = z
-	.object({
+const UpdateFileSchema = z.union([
+	z.object({
 		fieldname: z.string(),
 		originalname: z.string(),
 		encoding: z.string(),
@@ -15,17 +14,18 @@ const UpdateFile = z
 		filename: z.string(),
 		path: z.string(),
 		size: z.number(),
-	})
-	.or(z.null());
+	}),
+	z.function(),
+]);
 
 export class SharpMiddleWares {
 	async avatar(request: FastifyRequest, _: FastifyReply) {
+		const imageFile = UpdateFileSchema.parse(request.file);
+		if (typeof imageFile === 'function') return;
 		const baseRoot = path.join(__dirname, '..', '..');
-		const avatarPath = UpdateFile.parse(request.file)?.path;
-		const avatarFileName = UpdateFile.parse(request.file)?.filename;
-		if (!avatarPath || !avatarFileName) {
-			throw new ClientError('no found file');
-		}
+		const avatarPath = imageFile?.path;
+		const avatarFileName = imageFile?.filename;
+		if (!avatarPath || !avatarFileName) return;
 
 		const filePath = path.join(baseRoot, avatarPath);
 		const image = sharp(filePath);

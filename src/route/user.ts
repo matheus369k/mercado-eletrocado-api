@@ -35,8 +35,8 @@ const UpdateUserBodySchema = CreateUserBodySchema.pick({
 	name: true,
 });
 
-const UpdateFile = z
-	.object({
+const UpdateFileSchema = z.union([
+	z.object({
 		fieldname: z.string(),
 		originalname: z.string(),
 		encoding: z.string(),
@@ -45,8 +45,9 @@ const UpdateFile = z
 		filename: z.string(),
 		path: z.string(),
 		size: z.number(),
-	})
-	.or(z.null());
+	}),
+	z.custom<typeof Function>(),
+]);
 
 export class UsersRoutes {
 	create(app: FastifyInstance) {
@@ -190,8 +191,9 @@ export class UsersRoutes {
 				],
 			},
 			async (request, reply) => {
+				const imageFile = UpdateFileSchema.parse(request.file);
 				const { userId } = UserPayloadTokenSchema.parse(request.user);
-				const avatar = UpdateFile.parse(request.file)?.path || null;
+				const avatar = typeof imageFile === 'function' ? null : imageFile.path;
 				const { cep, name } = UpdateUserBodySchema.parse(request.body);
 				if (!userId) {
 					throw new ClientError('user not have authorization');
