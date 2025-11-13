@@ -2,7 +2,6 @@ import type { FastifyInstance } from 'fastify';
 import { redis } from '@/db/redis/redis';
 import { ClientError } from '@/error/client-error';
 import { AuthorizationToken } from '@/util/token';
-import { AuthMiddleWares } from '@/middleware/auth';
 
 export class TokenRoutes {
 	async refreshAccessToken(app: FastifyInstance) {
@@ -18,7 +17,10 @@ export class TokenRoutes {
 				});
 			if (!verifyRefreshToken) {
 				reply.clearCookie('refreshToken', {
+					sameSite: 'none',
+					httpOnly: true,
 					path: '/token',
+					secure: true,
 				});
 				throw new ClientError('refresh token is invalid');
 			}
@@ -31,7 +33,7 @@ export class TokenRoutes {
 			return reply
 				.setCookie('accessToken', accessToken, {
 					maxAge: new AuthorizationToken().accessTokenAge,
-					sameSite: 'strict',
+					sameSite: 'none',
 					secure: true,
 				})
 				.send('ok');
@@ -50,7 +52,10 @@ export class TokenRoutes {
 			});
 			if (!verifyRefreshToken) {
 				reply.clearCookie('refreshToken', {
+					sameSite: 'none',
+					httpOnly: true,
 					path: '/token',
+					secure: true,
 				});
 				throw new ClientError('refresh token is invalid');
 			}
@@ -59,7 +64,10 @@ export class TokenRoutes {
 
 			reply
 				.clearCookie('refreshToken', {
+					sameSite: 'none',
+					httpOnly: true,
 					path: '/token',
+					secure: true,
 				})
 				.send('ok');
 		});

@@ -16,6 +16,8 @@ export class AuthMiddleWares {
 		const user = UserPayloadTokenSchema.parse(verifyAccessToken);
 		if (!user) {
 			reply.clearCookie('accessToken', {
+				sameSite: 'none',
+				secure: true,
 				path: '/',
 			});
 			throw new ClientError('user not authorization');

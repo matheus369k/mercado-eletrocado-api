@@ -89,13 +89,13 @@ export class UsersRoutes {
 				return reply
 					.setCookie('accessToken', accessToken, {
 						maxAge: new AuthorizationToken().accessTokenAge,
-						sameSite: 'strict',
+						sameSite: 'none',
 						secure: true,
 						path: '/',
 					})
 					.setCookie('refreshToken', refreshToken, {
 						maxAge: new AuthorizationToken(stayConnected).refreshCookieAge,
-						sameSite: 'strict',
+						sameSite: 'none',
 						httpOnly: true,
 						path: '/token',
 						secure: true,
@@ -141,13 +141,13 @@ export class UsersRoutes {
 				return reply
 					.setCookie('accessToken', accessToken, {
 						maxAge: authorization.accessTokenAge,
-						sameSite: 'strict',
+						sameSite: 'none',
 						secure: true,
 						path: '/',
 					})
 					.setCookie('refreshToken', refreshToken, {
 						maxAge: authorization.refreshCookieAge,
-						sameSite: 'strict',
+						sameSite: 'none',
 						path: '/token',
 						httpOnly: true,
 						secure: true,
@@ -227,6 +227,8 @@ export class UsersRoutes {
 
 				return reply
 					.clearCookie('accessToken', {
+						sameSite: 'none',
+						secure: true,
 						path: '/',
 					})
 					.send('ok');
@@ -255,6 +257,8 @@ export class UsersRoutes {
 
 				return reply
 					.clearCookie('accessToken', {
+						sameSite: 'none',
+						secure: true,
 						path: '/',
 					})
 					.send('ok');
