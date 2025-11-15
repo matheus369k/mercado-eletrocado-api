@@ -1,1 +1,0 @@
-ALTER TABLE "favorites" RENAME COLUMN "favorite_id" TO "product_id";

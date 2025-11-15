@@ -23,9 +23,11 @@ O projeto é uma API para o projeto de e-commerce. Tendo como objetivo, armazena
 
 Funcionalidades:
 - rotas para registo, login e remoção de usuários
-- autenticação jwt, para auto login do usuário
+- autenticação JWT(json web token), para auto login do usuário
 - rotas para cadastro, leitura e remoção de produtos
 - armazenamento e compactação de aquivos de imagem, para uso de avatars
+- rotas para cadastro e leitura deliveries products, vinculados a uma conta
+- rotas para cadastro ,leitura e remoção de favorites products, vinculados a uma conta
 
 ## Iniciando
 
@@ -53,9 +55,12 @@ MONGO_DATABASE_PASSWORD=ghome123
 
 POSTGRES_DATABASE_URL=postgresql://root:root@localhost:5432/eletrocado-api
 
+REDIS_DATABASE_URL=redis://localhost:6379
+
 FRONT_END_URL=http://localhost:5173
 
-JWT_SECRET_KEY=2d10d7aa-e9bc-4545-ade9-60d0c2a4a0de
+JWT_ACCESS_SECRET_KEY=e34ee940-750c-4dc1-984b-671fbd4dc2af
+JWT_REFRESH_SECRET_KEY=e34ee940-750c-4dc1-984b-671fbd4dc2af
 ```
 
 Agora para criar os bancos de dados no docker, digite o comando abaixo no terminal:
@@ -64,7 +69,13 @@ Agora para criar os bancos de dados no docker, digite o comando abaixo no termin
 docker compose up -d
 ```
 
-Após use o comando abaixo para inserir dados os banco de dados...
+Agora crie as migration, logo após as tabela:
+```bash
+yarn db:generate
+yarn db:migrate
+```
+
+Após use o comando abaixo para inserir dados os banco de dados:
 ```bash
 yarn seed
 ```
@@ -74,6 +85,7 @@ yarn dev
 ```
 ## Rotas
 Para aprender ou testar as rotas da aplicação, acesse o arquivo __[client.http](/client.http)__. 
+
 ## 📜Licença
 
 Para o projeto fora usado a licença 🔗[MIT](/LICENSE.txt).

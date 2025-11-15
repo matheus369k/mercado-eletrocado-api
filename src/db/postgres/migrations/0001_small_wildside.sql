@@ -1,1 +1,0 @@
-ALTER TABLE "favorites" ALTER COLUMN "favorite_id" SET NOT NULL;

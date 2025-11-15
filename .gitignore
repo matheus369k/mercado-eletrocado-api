@@ -2,6 +2,7 @@
 /build/
 /dist/
 /public/uploads/*
+/src/db/postgres/migrations/
 
 .env.local
 .env
