@@ -45,30 +45,46 @@ export class ProductsControllers {
 
 	async getAll() {
 		const db = await mongoDb();
-		const products = await db.Products.find().limit(24);
+		const products = await db.Products.aggregate([
+			{
+				$group: {
+					_id: '$category',
+					products: {
+						$push: '$$ROOT',
+					},
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					result: {
+						$push: {
+							k: '$_id',
+							v: {
+								$slice: [
+									'$products',
+									8,
+								],
+							},
+						},
+					},
+				},
+			},
+			{
+				$replaceRoot: {
+					newRoot: {
+						$arrayToObject: '$result',
+					},
+				},
+			},
+		]);
+
 		if (!products || products.length === 0) {
 			throw new ClientError('Not found product...');
 		}
-		const separationProductsForCategory = products.reduce((acc, curr) => {
-			if (acc[curr.category]) {
-				acc[curr.category].push(curr);
-			} else {
-				return {
-					[curr.category]: [
-						curr,
-					],
-					...(acc || []),
-				};
-			}
-			return acc;
-		}, {});
-
-		if (!separationProductsForCategory) {
-			throw new ClientError('Error trying category datas');
-		}
 
 		return {
-			products: separationProductsForCategory,
+			products,
 		};
 	}
 
