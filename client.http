@@ -75,8 +75,8 @@ POST {{base}}/users/login
 Content-Type: application/json
 
 {
-  "email": "matheus@gmail.com",
-  "password": "matheus123"
+  "email": "ghome@gmail.com",
+  "password": "ghome123"
 }
 
 ### ProfileUser
