@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
-import { ProductsControllers } from 'src/controller/products';
+import { ProductsControllers } from '@/controller/products';
 import { z } from 'zod/v4';
 
 const CreateProductBodySchema = z.object({

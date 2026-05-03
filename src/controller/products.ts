@@ -1,4 +1,4 @@
-import { ClientError } from 'src/error/client-error';
+import { ClientError } from '@/error/client-error';
 import { mongoDb } from '@/db/mongo/mongo';
 
 type SlideCreateProductType = {

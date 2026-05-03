@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod';
-import { ClientError } from 'src/error/client-error';
+import { ClientError } from '@/error/client-error';
 
 type FastifyErrorHandler = FastifyInstance['errorHandler'];
 

@@ -1,5 +1,5 @@
 import { desc, eq } from 'drizzle-orm';
-import { ClientError } from 'src/error/client-error';
+import { ClientError } from '@/error/client-error';
 import { postgresDb } from '@/db/postgres/postgresql';
 import { pgSchema } from '@/db/postgres/schema';
 

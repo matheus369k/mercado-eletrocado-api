@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
-import { DeliveriesControllers } from 'src/controller/deliveries';
+import { DeliveriesControllers } from '@/controller/deliveries';
 import { z } from 'zod/v4';
 import { ClientError } from '@/error/client-error';
 import { AuthMiddleWares } from '@/middleware/auth';
