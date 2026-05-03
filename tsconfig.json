@@ -16,7 +16,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16",
-    "baseUrl": ".",
+    "rootDir": "src",
+    "outDir": "dist",
     "paths": {
       "@/*": [
         "./src/*"
@@ -29,7 +30,7 @@
     "build"
   ],
   "include": [
+    "docker",
     "src",
-    "docker"
   ]
 }
