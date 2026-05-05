@@ -45,7 +45,7 @@ export class ProductsControllers {
 
 	async getAll() {
 		const db = await mongoDb();
-		const products = await db.Products.aggregate([
+		const [products] = await db.Products.aggregate([
 			{
 				$group: {
 					_id: '$category',
@@ -79,7 +79,7 @@ export class ProductsControllers {
 			},
 		]);
 
-		if (!products || products.length === 0) {
+		if (!products) {
 			throw new ClientError('Not found product...');
 		}
 
