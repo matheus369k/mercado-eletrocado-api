@@ -13,7 +13,7 @@ services:
       - mongo-data:/data/db
   
   postgresql:
-    image: bitnami/postgresql:13.16.0
+    image: bitnami/postgresql:latest
     ports:
       - 5432:5432
     environment:
@@ -26,7 +26,7 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - 6378:6379
+      - 6379:6379
 
 volumes:
   mongo-data:
